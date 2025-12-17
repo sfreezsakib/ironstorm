@@ -1,0 +1,37 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+  - name: "settings"
+    label: "⚙️ GUILD SETTINGS" # বড় বাটন ১
+    files:
+      - file: "content/data.json"
+        label: "Edit Info & Links"
+        name: "home_info"
+        fields:
+          - {label: "Guild Name", name: "guildName", widget: "string"}
+          - {label: "Name Change Link", name: "nameChangeLink", widget: "string"}
+          # বাকি ফিল্ডগুলো...
+
+  - name: "members"
+    label: "👥 GUILD MEMBERS" # বড় বাটন ২
+    folder: "content/members"
+    create: true
+    fields:
+      - {label: "Name", name: "title", widget: "string"}
+      - {label: "Role", name: "role", widget: "string"}
+      # বাকি ফিল্ডগুলো...
+
+  - name: "requests"
+    label: "📩 JOIN REQUESTS" # বড় বাটন ৩
+    editor: { preview: false }
+    files:
+      - file: "content/admin-note.md"
+        label: "View Form Submissions"
+        name: "view_requests"
+        fields:
+          - {label: "Note", name: "note", widget: "markdown"}

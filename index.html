@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>IRON STORM - Official</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Rajdhani', sans-serif; background-color: #020617; color: #e2e8f0; overflow-x: hidden; }
+        h1, h2, h3, .font-heading { font-family: 'Orbitron', sans-serif; }
+        .neon-blue { text-shadow: 0 0 15px rgba(59, 130, 246, 0.8); }
+        .glass-card { background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(12px); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 12px; transition: 0.3s; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
+        .modal.active { display: flex; }
+        input, select, textarea { background: #0f172a !important; border: 1px solid #1e40af !important; color: white !important; outline: none; border-radius: 8px !important; }
+        .logo-shadow { filter: drop-shadow(0 0 15px rgba(59, 130, 246, 0.6)); }
+    </style>
+</head>
+<body>
+
+    <nav class="fixed w-full z-50 bg-slate-950/80 backdrop-blur-md border-b border-blue-900/30 px-4">
+        <div class="max-w-7xl mx-auto h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <img src="logo.png" class="h-10 w-10 logo-shadow">
+                <span id="nav-title" class="font-heading text-blue-500 font-black italic text-xs md:text-xl uppercase">IRON STORM</span>
+            </div>
+            <div class="flex items-center gap-2 bg-slate-900/80 p-1.5 rounded-lg border border-blue-900/40">
+                <div class="text-right">
+                    <p class="text-[7px] text-slate-500 uppercase font-bold leading-none">Guild UID</p>
+                    <p id="display-guild-uid" class="text-blue-400 font-bold font-mono text-xs">Loading...</p>
+                </div>
+                <button onclick="copyText(document.getElementById('display-guild-uid').innerText)" class="bg-blue-600/20 text-blue-400 p-1 rounded hover:bg-blue-600 transition">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" stroke-width="2"/></svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <section class="min-h-screen flex flex-col items-center justify-center text-center px-4 pt-20">
+        <img src="logo.png" class="w-48 md:w-64 mb-6 logo-shadow animate-pulse">
+        <h1 id="hero-title" class="text-4xl md:text-7xl font-black text-white mb-2 neon-blue uppercase italic tracking-tighter">IRON STORM</h1>
+        <p id="hero-slogan" class="text-blue-300 mb-10 font-bold tracking-[0.2em] text-[10px] md:text-lg uppercase">DOMINATE THE BATTLEGROUND</p>
+        
+        <div class="flex flex-col md:flex-row gap-4 items-center">
+            <button onclick="openJoinModal()" class="bg-blue-600 text-white font-black py-4 px-10 rounded-full shadow-[0_0_20px_rgba(37,99,235,0.4)] uppercase italic tracking-widest hover:scale-105 transition w-64">Join the Storm</button>
+            <a id="name-change-btn" href="#" target="_blank" class="bg-transparent border-2 border-blue-600 text-blue-400 font-black py-4 px-10 rounded-full uppercase italic tracking-widest hover:bg-blue-600 hover:text-white transition w-64 text-center">
+                Player Name Changer
+            </a>
+        </div>
+    </section>
+
+    <section class="py-12 bg-slate-950 border-t border-blue-900/20">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-2 lg:grid-cols-5 gap-4">
+            <div class="glass-card p-4 text-center border-l-4 border-blue-500"><h3 id="stat-level" class="text-2xl font-black text-white italic">--</h3><p class="text-blue-400 text-[9px] font-bold uppercase mt-1">Level</p></div>
+            <div class="glass-card p-4 text-center border-l-4 border-blue-500"><h3 id="stat-glory" class="text-2xl font-black text-white italic">--</h3><p class="text-blue-400 text-[9px] font-bold uppercase mt-1">Glory</p></div>
+            <div class="glass-card p-4 text-center border-l-4 border-blue-500"><h3 id="stat-region" class="text-2xl font-black text-white italic">--</h3><p class="text-blue-400 text-[9px] font-bold uppercase mt-1">Region %</p></div>
+            <div class="glass-card p-4 text-center border-l-4 border-blue-500"><h3 id="stat-location" class="text-2xl font-black text-white italic">--</h3><p class="text-blue-400 text-[9px] font-bold uppercase mt-1">Location %</p></div>
+            <div id="ranking-card" class="glass-card p-4 text-center border-l-4 border-yellow-500 hidden"><h3 id="stat-number" class="text-2xl font-black text-yellow-400 italic">--</h3><p class="text-yellow-600 text-[9px] font-bold uppercase mt-1">Top Rank</p></div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-slate-950 px-4">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-2xl font-black text-center text-white mb-16 neon-blue uppercase italic tracking-tighter">Guild Member Info</h2>
+            <div id="leader-container" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"></div>
+            <div id="top-container" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12"></div>
+            <div id="general-container" class="grid grid-cols-2 md:grid-cols-5 gap-3"></div>
+        </div>
+    </section>
+
+    <div id="join-modal" class="modal" onclick="this.classList.remove('active')">
+        <div class="glass-card max-w-lg w-full p-6 relative overflow-y-auto max-h-[90vh] border-2 border-blue-600 shadow-2xl" onclick="event.stopPropagation()">
+            <button onclick="document.getElementById('join-modal').classList.remove('active')" class="absolute top-2 right-4 text-3xl text-slate-500 hover:text-white">&times;</button>
+            <h2 class="text-2xl font-black text-white text-center neon-blue uppercase mb-6 italic tracking-tight">Guild Application</h2>
+            
+            <form name="guild-requests" method="POST" data-netlify="true" class="space-y-4 text-left">
+                <input type="hidden" name="form-name" value="guild-requests" />
+                
+                <div>
+                    <label class="text-[10px] uppercase font-bold text-blue-400 ml-1">আপনার নাম / Player Name</label>
+                    <input type="text" name="PlayerName" required class="w-full p-3 text-sm mt-1">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] uppercase font-bold text-blue-400 ml-1">আপনার ডিভাইস?</label>
+                        <select name="Device" required class="w-full p-3 text-sm mt-1">
+                            <option value="Mobile">Mobile</option>
+                            <option value="PC">PC</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[10px] uppercase font-bold text-blue-400 ml-1">প্যানেল ইউজ করেন?</label>
+                        <select name="PanelUser" required class="w-full p-3 text-sm mt-1">
+                            <option value="No">No</option>
+                            <option value="Yes">Yes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-[10px] uppercase font-bold text-blue-400 ml-1">WhatsApp Number</label>
+                    <input type="tel" name="WhatsApp" required class="w-full p-3 text-sm mt-1">
+                </div>
+
+                <div>
+                    <label class="text-[10px] uppercase font-bold text-blue-400 ml-1">কিভাবে জয়েন হতে চান?</label>
+                    <select id="team-type" name="JoinType" onchange="updateJoinFields()" class="w-full p-3 text-sm mt-1">
+                        <option value="Solo">Solo</option>
+                        <option value="Duo">Duo</option>
+                        <option value="Squad">Squad</option>
+                    </select>
+                </div>
+
+                <div id="uid-input-container" class="space-y-3 bg-slate-900/50 p-4 rounded-lg border border-blue-900/20">
+                    <div class="grid grid-cols-1 gap-2">
+                        <label class="text-[9px] uppercase font-bold text-slate-500">Player 1 Details</label>
+                        <div class="grid grid-cols-2 gap-2 mt-1">
+                            <input type="text" name="P1_Name" placeholder="Name" required class="p-2 text-xs rounded">
+                            <input type="text" name="P1_UID" placeholder="UID" required class="p-2 text-xs rounded">
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-[10px] uppercase font-bold text-blue-400 ml-1">কেন জয়েন হতে চান?</label>
+                    <textarea name="Reason" rows="2" required placeholder="উত্তর লিখুন..." class="w-full p-3 text-sm mt-1"></textarea>
+                </div>
+
+                <button type="submit" class="w-full bg-blue-600 text-white font-black py-4 rounded-xl uppercase italic tracking-widest shadow-lg transition">Submit Application</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="profile-modal" class="modal" onclick="this.classList.remove('active')">
+        <div class="glass-card max-w-sm w-full p-6 relative border-2 border-blue-500" onclick="event.stopPropagation()">
+            <button onclick="document.getElementById('profile-modal').classList.remove('active')" class="absolute top-2 right-4 text-2xl text-slate-500 hover:text-white">&times;</button>
+            <img id="modal-img" src="" class="w-24 h-24 rounded-xl mx-auto mb-4 border-2 border-blue-500 object-cover">
+            <h3 id="modal-name" class="text-xl font-black text-white text-center uppercase mb-1 italic">Name</h3>
+            <p id="modal-role" class="text-blue-400 text-center text-[10px] font-bold uppercase mb-4 tracking-[0.2em]">Role</p>
+            <div class="bg-slate-900/80 p-3 rounded-lg mb-4 flex justify-between items-center border border-blue-900/30">
+                <span id="modal-uid" class="text-white font-mono text-sm font-bold tracking-widest">UID</span>
+                <button onclick="copyText(document.getElementById('modal-uid').innerText)" class="text-[10px] bg-blue-600 px-3 py-1 rounded font-bold uppercase">Copy</button>
+            </div>
+            <div class="text-xs text-slate-400 space-y-2">
+                <p>📍 <span class="font-bold text-slate-300 uppercase ml-1">Location:</span> <span id="modal-address"></span></p>
+                <p>📝 <span class="font-bold text-slate-300 uppercase ml-1">About:</span> <span id="modal-bio"></span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const GITHUB_USER = "sfreezsakib"; 
+        const GITHUB_REPO = "ironstorm";     
+        let allMembers = [];
+
+        async function init() {
+            try {
+                const settings = await fetch('content/data.json').then(res => res.json());
+                document.getElementById('display-guild-uid').innerText = settings.guildUid;
+                document.getElementById('nav-title').innerText = settings.guildName;
+                document.getElementById('hero-title').innerText = settings.guildName;
+                document.getElementById('hero-slogan').innerText = settings.slogan;
+                document.getElementById('stat-level').innerText = settings.level;
+                document.getElementById('stat-glory').innerText = settings.glory;
+                document.getElementById('stat-region').innerText = settings.regionTop;
+                document.getElementById('stat-location').innerText = settings.locationTop;
+                document.getElementById('name-change-btn').href = settings.nameChangeLink || "#";
+
+                if (settings.topNumber && settings.topNumber.toLowerCase() !== "no") {
+                    document.getElementById('ranking-card').classList.remove('hidden');
+                    document.getElementById('stat-number').innerText = "#" + settings.topNumber;
+                }
+
+                const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/content/members`);
+                const files = await res.json();
+                for (let f of files) {
+                    if (f.name === ".gitkeep") continue;
+                    const m = await fetch(f.download_url).then(r => r.json());
+                    allMembers.push(m);
+                    renderCard(m);
+                }
+            } catch(e) { }
+        }
+
+        function renderCard(m) {
+            let img = m.photo || `https://api.dicebear.com/7.x/bottts/svg?seed=${m.title}`;
+            let target = m.category === "Leader" ? 'leader-container' : (m.category === "Top Member" ? 'top-container' : 'general-container');
+            document.getElementById(target).innerHTML += `<div class="glass-card p-4 text-center" onclick="openProfile('${m.uid}')"><img src="${img}" class="w-16 h-16 rounded-full mx-auto mb-2 border border-blue-500 object-cover shadow-lg"><h4 class="text-white font-bold text-xs uppercase truncate">${m.title}</h4><p class="text-blue-500 text-[8px] uppercase font-bold">${m.role}</p></div>`;
+        }
+
+        function openProfile(uid) {
+            const m = allMembers.find(x => x.uid === uid);
+            if(!m) return;
+            document.getElementById('modal-img').src = m.photo || `https://api.dicebear.com/7.x/bottts/svg?seed=${m.title}`;
+            document.getElementById('modal-name').innerText = m.title;
+            document.getElementById('modal-role').innerText = m.role;
+            document.getElementById('modal-uid').innerText = m.uid;
+            document.getElementById('modal-address').innerText = m.address || "Unknown";
+            document.getElementById('modal-bio').innerText = m.bio || "Iron Storm Elite Player";
+            document.getElementById('profile-modal').classList.add('active');
+        }
+
+        function openJoinModal() { document.getElementById('join-modal').classList.add('active'); }
+
+        function updateJoinFields() {
+            const type = document.getElementById('team-type').value;
+            const container = document.getElementById('uid-input-container');
+            container.innerHTML = "";
+            let count = type === "Solo" ? 1 : (type === "Duo" ? 2 : 4);
+            for(let i=1; i<=count; i++) {
+                container.innerHTML += `<div class="mb-3 border-b border-blue-900/10 pb-2"><label class="text-[9px] uppercase font-bold text-slate-500">Player ${i} Details</label><div class="grid grid-cols-2 gap-2 mt-1"><input type="text" name="P${i}_Name" placeholder="Name" required class="p-2 text-xs rounded"><input type="text" name="P${i}_UID" placeholder="UID" required class="p-2 text-xs rounded"></div></div>`;
+            }
+        }
+
+        function copyText(val) {
+            navigator.clipboard.writeText(val);
+            alert("Copied: " + val);
+        }
+        init();
+    </script>
+</body>
+</html>
